@@ -1,8 +1,10 @@
- pipeline {
+pipeline {
   agent none
   options { timestamps(); timeout(time: 15, unit: 'MINUTES') }
 
+
   stages {
+
 
     /* 1) WHERE AM I — run on Controller (built-in) */
     stage('Where am I (Controller)') {
@@ -12,6 +14,7 @@
         echo "WORKSPACE = ${env.WORKSPACE}"
       }
     }
+
 
     /* 2) BUILD & RUN — on Windows Agent (label: win) */
     stage('Build on Windows Agent') {
@@ -26,6 +29,7 @@
         """
       }
     }
+
 
     /* 3) PARALLEL DEMO — Controller vs Agent at the same time */
     stage('Parallel: Controller vs Agent') {
@@ -46,10 +50,12 @@
     }
   }
 
+
   post {
     always {
-      archiveArtifacts artifacts: 'artifact.txt, out/**', allowEmptyArchive: false
+        node('win'){
+      archiveArtifacts artifacts: 'artifact.txt, out/', allowEmptyArchive: false
+       }
     }
   }
 }
-
